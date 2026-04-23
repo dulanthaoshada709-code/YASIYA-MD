@@ -1,31 +1,36 @@
-name: Node.js CI/CD Workflow
+name: Node.js CI
 
 on:
   push:
     branches:
-      - main
+main
   pull_request:
     branches:
-      - main
+main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [20.x]
-        
+
     steps:
-    - name: Checkout repository
+name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
+name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
+name: Install dependencies
+      run: npm install --legacy-peer-deps
 
-    - name: Start application
+name: Start application
       run: npm start
